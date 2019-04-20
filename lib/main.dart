@@ -1,7 +1,10 @@
+import 'package:birb/models/post.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'posts_list.dart';
+import 'models/post.dart';
+import 'models/post_mock.dart';
 
 void main() {
   runApp(MyApp());
@@ -53,7 +56,19 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         elevation: 0.0,
       ),
-      body: const PostsList(),
+      body: PostsList(_loadPosts(context)),
     );
+  }
+
+  Stream<List<Post>> _loadPosts(BuildContext context) {
+    final List<List<dynamic>> mockSanpshot = <List<dynamic>>[
+      List<dynamic>.generate(10, (int index) => mockPostData(index: index))
+    ];
+
+    return Stream<List<dynamic>>.fromIterable(mockSanpshot).map(_convertToPosts);
+  }
+
+  List<Post> _convertToPosts(List<dynamic> data) {
+    return data.map((dynamic item) => Post.fromMap(item)).toList();
   }
 }
